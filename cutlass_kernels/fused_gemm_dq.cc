@@ -13,8 +13,7 @@
 
 using torch::Tensor;
 
-namespace torch_ext {
-
+namespace fastertransformer {
 
 template<typename T, typename WeightType>
 Tensor fused_gemm_dq_helper(
@@ -30,7 +29,7 @@ Tensor fused_gemm_dq_helper(
     const WeightType* weight_ptr    = get_ptr<const WeightType>(weight);
     const T*          scales_ptr    = get_ptr<const T>(scales);
 
-    fastertransformer::CutlassFpAIntBGemmRunner<T, WeightType> fused_gemm_dq_runner;
+    CutlassFpAIntBGemmRunner<T, WeightType> fused_gemm_dq_runner;
     const int ws_bytes = fused_gemm_dq_runner.getWorkspaceSize(m, n, k);
 
     auto output_tensor = torch::empty({m, n}, torch::dtype(_st).device(torch::kCUDA).requires_grad(false));
@@ -91,7 +90,7 @@ Tensor fused_gemm_dq(Tensor input_activations, Tensor weight, Tensor scales)
             throw std::runtime_error("Unsupported tensor type. Got " + std::string(at::toString(_st)));
     }
     return output_tensor;
-
+}
 TORCH_LIBRARY(gemm_dq_unit_ops, m)
 {
     m.def("fused_gemm_dq", fused_gemm_dq);

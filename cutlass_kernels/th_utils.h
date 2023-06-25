@@ -32,7 +32,7 @@
 #define PRINT_TENSOR(x) std::cout << #x << ":\n" << x << std::endl
 #define PRINT_TENSOR_SIZE(x) std::cout << "size of " << #x << ": " << x.sizes() << std::endl
 
-namespace torch_ext {
+namespace fastertransformer {
 
 template<typename T>
 inline T* get_ptr(torch::Tensor& t)

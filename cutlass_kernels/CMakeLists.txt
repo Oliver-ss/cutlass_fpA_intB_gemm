@@ -21,6 +21,8 @@ include_directories(${CUDA_TOOLKIT_ROOT_DIR}/include)
 link_directories(${CUDA_TOOLKIT_ROOT_DIR}/lib64)
 
 find_package(Python REQUIRED)
+include_directories(~/miniconda3/envs/tgi/include/python3.10/)
+# include_directories(${PYTHON_INCLUDE_DIRS})
 
 execute_process(
     COMMAND
@@ -31,6 +33,8 @@ execute_process(
 set(CMAKE_PREFIX_PATH "${DCMAKE_PREFIX_PATH}")
 
 find_package(Torch REQUIRED)
+# include_directories(~/miniconda3/envs/tgi/lib/python3.10/site-packages/torch/include/)
+include_directories(${TORCH_INCLUDE_DIRS})
 find_library(TORCH_PYTHON_LIBRARY torch_python PATHS "${TORCH_INSTALL_PREFIX}/lib")
 
 set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -t 8 \
@@ -39,6 +43,6 @@ set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -t 8 \
                       -gencode=arch=compute_80,code=\\\"sm_80,compute_80\\\" \
                       ")
 
-# add_library(fpA_intB_gemm SHARED fpA_intB_gemm.cu cutlass_heuristic.cc cutlass_preprocessors.cc ${CMAKE_CURRENT_SOURCE_DIR}/../utils/logger.cc ${CMAKE_CURRENT_SOURCE_DIR}/../utils/cuda_utils.cc)
-add_library(fpA_intB_gemm SHARED fused_gemm_dq.cc fpA_intB_gemm.cu cutlass_heuristic.cc cutlass_preprocessors.cc ${CMAKE_CURRENT_SOURCE_DIR}/../utils/logger.cc ${CMAKE_CURRENT_SOURCE_DIR}/../utils/cuda_utils.cc)
+# add_library(fpA_intB_gemm SHARED fused_gemm_dq.cc fpA_intB_gemm.cu cutlass_heuristic.cc cutlass_preprocessors.cc ${CMAKE_CURRENT_SOURCE_DIR}/../utils/logger.cc ${CMAKE_CURRENT_SOURCE_DIR}/../utils/cuda_utils.cc)
+add_library(fpA_intB_gemm SHARED fused_gemm_dq.cc cutlass_heuristic.cc cutlass_preprocessors.cc ${CMAKE_CURRENT_SOURCE_DIR}/../utils/logger.cc ${CMAKE_CURRENT_SOURCE_DIR}/../utils/cuda_utils.cc)
 target_link_libraries(fpA_intB_gemm "${TORCH_LIBRARIES}" "${TORCH_PYTHON_LIBRARY}")
